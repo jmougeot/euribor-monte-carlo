@@ -1,0 +1,65 @@
+{
+  "parameters": {
+    "kappa": 2.252588861514936,
+    "theta": 0.00803662695225358,
+    "sigma": 0.025395477358116984,
+    "r0": 0.020210952380952375
+  },
+  "statistics": {
+    "terminal": {
+      "mean": 0.009674764203068016,
+      "std": 0.012015233237465459,
+      "min": -0.03366419156587685,
+      "max": 0.060081085955185354,
+      "median": 0.00963988168535446,
+      "p05": -0.009919943228888953,
+      "p25": 0.0014581427020981415,
+      "p75": 0.01791847188161671,
+      "p95": 0.029084551634863745
+    },
+    "paths": {
+      "mean_path_volatility": 0.007828023892958206,
+      "max_drawdown": 1.155458174206413,
+      "time_above_initial": 0.19,
+      "negative_rates_prob": 0.6234
+    },
+    "validation": {
+      "theoretical_terminal_mean": 0.009305084401015466,
+      "theoretical_terminal_std": 0.011899541287290918,
+      "mean_error": 0.0003696798020525506,
+      "std_error": 0.00011569195017454084
+    },
+    "simulation_info": {
+      "n_paths": 5000,
+      "n_steps": 252,
+      "total_time_years": 1.003968253968254,
+      "dt": 0.003968253968253968
+    }
+  },
+  "metadata": {
+    "data_source": {
+      "source": "ECB_SDW",
+      "series_label": "Euribor 3M (FM)",
+      "url": "https://sdw-wsrest.ecb.europa.eu/service/data/FM/M.U2.EUR.RT.MM.EURIBOR3MD_.HSTA?lastNObservations=600",
+      "last_date": "2025-08-01",
+      "rate_range": "-0.0058 - 0.0758"
+    },
+    "simulation_args": {
+      "tenor": "3M",
+      "data_csv": "data/sample_euribor3m.csv",
+      "calibration": "mle",
+      "show_quality": false,
+      "horizon": 252,
+      "dt": 0.003968253968253968,
+      "n_paths": 5000,
+      "method": "exact",
+      "seed": 42,
+      "export_csv": "euribor_simulation.csv",
+      "export_all_paths": false,
+      "export_stats": "stats.json",
+      "quiet": false,
+      "verbose": true
+    },
+    "execution_time_seconds": 1.3076021671295166
+  }
+}
