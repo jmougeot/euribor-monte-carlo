@@ -116,9 +116,6 @@ def run_monte_carlo_simulation(
     Returns:
         (paths, statistics)
     """
-    print(f"Simulation Monte Carlo: {n_paths} trajectoires, {horizon} pas")
-    print(f"Méthode: {method}, dt={dt:.6f}")
-    
     # Sélection de la méthode
     if method.lower() == "exact":
         paths = simulate_vasicek_exact(params, horizon, n_paths, dt, seed)
@@ -230,7 +227,6 @@ def export_simulation_results(
         # Export toutes les trajectoires
         df = paths_to_dataframe(paths)
         df.to_csv(filename)
-        print(f"✓ {len(df)} trajectoires exportées vers {filename}")
     else:
         # Export statistiques + quelques trajectoires échantillon
         sample_size = min(100, paths.shape[1])
@@ -245,7 +241,6 @@ def export_simulation_results(
             f.write("#\n")
             
         df.to_csv(filename, mode='a')
-        print(f"✓ Échantillon de {sample_size} trajectoires + stats exporté vers {filename}")
 
 if __name__ == "__main__":
     # Test du module
@@ -256,7 +251,6 @@ if __name__ == "__main__":
         # Chargement et calibration
         data, _ = load_with_fallback()
         params = calibrate_vasicek_mle(data["rate"])
-        print(f"Paramètres calibrés: {params}")
         
         # Simulation test
         paths, stats = run_monte_carlo_simulation(
@@ -267,9 +261,5 @@ if __name__ == "__main__":
             seed=42
         )
         
-        print(f"\nStatistiques de simulation:")
-        print(f"Terminal: {stats['terminal']}")
-        print(f"Validation: {stats['validation']}")
-        
     except Exception as e:
-        print(f"Erreur: {e}")
+        pass

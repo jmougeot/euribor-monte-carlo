@@ -46,7 +46,6 @@ def calibrate_vasicek_ols(rates: pd.Series, dt=1/252):
     # Contraintes sur b pour assurer stabilité
     if b <= 0 or b >= 1:
         b = max(0.001, min(0.999, b))
-        print(f"⚠ Paramètre b ajusté à {b:.4f} pour assurer la stabilité")
     
     # Calcul des paramètres Vasicek
     kappa = -np.log(b) / dt
@@ -65,7 +64,6 @@ def calibrate_vasicek_ols(rates: pd.Series, dt=1/252):
     # Validation des paramètres
     if sigma <= 0:
         sigma = 0.01
-        print(f"⚠ Volatilité ajustée à {sigma:.4f}")
     
     return VasicekParams(
         kappa=max(0.001, kappa),
@@ -130,11 +128,9 @@ def calibrate_vasicek_mle(rates: pd.Series, dt=1/252):
                 r0=r[-1]
             )
         else:
-            print("⚠ Optimisation MLE échouée, utilisation OLS")
             return calibrate_vasicek_ols(rates, dt)
             
     except Exception as e:
-        print(f"⚠ Erreur MLE: {e}, utilisation OLS")
         return calibrate_vasicek_ols(rates, dt)
 
 def estimate_model_quality(rates: pd.Series, params: VasicekParams, dt=1/252):
@@ -169,19 +165,15 @@ if __name__ == "__main__":
     
     try:
         data, _ = load_with_fallback()
-        print(f"Calibration sur {len(data)} observations")
         
         # Test OLS
         params_ols = calibrate_vasicek_ols(data["rate"])
-        print(f"\nOLS: {params_ols}")
         
         # Test MLE  
         params_mle = calibrate_vasicek_mle(data["rate"])
-        print(f"MLE: {params_mle}")
         
         # Qualité
         quality = estimate_model_quality(data["rate"], params_mle)
-        print(f"\nQualité: {quality}")
         
     except Exception as e:
-        print(f"Erreur: {e}")
+        pass

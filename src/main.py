@@ -9,6 +9,9 @@ import sys
 import time
 from pathlib import Path
 
+# Ajouter le répertoire src au path Python
+sys.path.insert(0, str(Path(__file__).parent))
+
 # Import des modules locaux
 from fetch_data import load_with_fallback
 from calibration import calibrate_vasicek_mle, calibrate_vasicek_ols, estimate_model_quality
@@ -63,56 +66,21 @@ def main():
     """Fonction principale"""
     args = parse_arguments()
     
-    if not args.quiet:
-        print("🎯 Simulation Monte Carlo Euribor - Modèle de Vasicek")
-        print("=" * 60)
-    
-    start_time = time.time()
-    
     try:
         # 1. Chargement des données
-        if args.verbose:
-            print(f"📊 Chargement des données Euribor {args.tenor}...")
-        
         data, meta = load_with_fallback(tenor=args.tenor, path_csv=args.data_csv)
         
-        if not args.quiet:
-            print(f"✓ Données chargées: {len(data)} observations")
-            print(f"  Source: {meta.get('source', 'unknown')}")
-            print(f"  Période: {data['date'].min().date()} → {data['date'].max().date()}")
-            print(f"  Taux: {data['rate'].min():.4f} → {data['rate'].max():.4f}")
-        
         # 2. Calibration du modèle
-        if args.verbose:
-            print(f"\n🔧 Calibration du modèle (méthode: {args.calibration})...")
-        
         if args.calibration == "mle":
             params = calibrate_vasicek_mle(data["rate"], dt=args.dt)
         else:
             params = calibrate_vasicek_ols(data["rate"], dt=args.dt)
         
-        if not args.quiet:
-            print(f"✓ Paramètres calibrés:")
-            print(f"  κ (mean reversion): {params.kappa:.4f}")
-            print(f"  θ (long-term level): {params.theta:.4f}")
-            print(f"  σ (volatility): {params.sigma:.4f}")
-            print(f"  r₀ (initial rate): {params.r0:.4f}")
-        
         # 3. Qualité de l'ajustement (optionnel)
         if args.show_quality:
-            if args.verbose:
-                print("\n📈 Évaluation de la qualité...")
             quality = estimate_model_quality(data["rate"], params, dt=args.dt)
-            print(f"  RMSE: {quality['rmse']:.4f}")
-            print(f"  Autocorrélation résiduelle: {quality['residual_autocorr']:.4f}")
         
         # 4. Simulation Monte Carlo
-        if args.verbose:
-            print(f"\n🎲 Simulation Monte Carlo...")
-            print(f"  Trajectoires: {args.n_paths}")
-            print(f"  Horizon: {args.horizon} pas ({args.horizon * args.dt:.2f} années)")
-            print(f"  Méthode: {args.method}")
-        
         paths, stats = run_monte_carlo_simulation(
             params=params,
             horizon=args.horizon,
@@ -123,27 +91,8 @@ def main():
             return_stats=True
         )
         
-        # 5. Affichage des résultats
-        if not args.quiet:
-            print(f"\n📊 Résultats de simulation:")
-            terminal = stats["terminal"]
-            print(f"  Taux terminal moyen: {terminal['mean']:.4f}")
-            print(f"  Écart-type: {terminal['std']:.4f}")
-            print(f"  Médiane: {terminal['median']:.4f}")
-            print(f"  Intervalle 90%: [{terminal['p05']:.4f}, {terminal['p95']:.4f}]")
-            
-            if args.verbose:
-                validation = stats["validation"]
-                print(f"\n🔍 Validation théorique:")
-                print(f"  Moyenne théorique: {validation['theoretical_terminal_mean']:.4f}")
-                print(f"  Écart théorique: {validation['theoretical_terminal_std']:.4f}")
-                print(f"  Erreur moyenne: {validation['mean_error']:.4f}")
-                print(f"  Erreur volatilité: {validation['std_error']:.4f}")
-        
-        # 6. Exports
+        # 5. Exports
         if args.export_csv:
-            if args.verbose:
-                print(f"\n💾 Export CSV: {args.export_csv}")
             export_simulation_results(
                 paths, stats, params, 
                 filename=args.export_csv,
@@ -151,8 +100,7 @@ def main():
             )
         
         if args.export_stats:
-            if args.verbose:
-                print(f"💾 Export statistiques: {args.export_stats}")
+            start_time = time.time()
             with open(args.export_stats, 'w') as f:
                 export_data = {
                     "parameters": {
@@ -169,15 +117,8 @@ def main():
                     }
                 }
                 json.dump(export_data, f, indent=2, default=str)
-            print(f"✓ Statistiques exportées vers {args.export_stats}")
-        
-        # 7. Résumé final
-        elapsed = time.time() - start_time
-        if not args.quiet:
-            print(f"\n✅ Simulation terminée en {elapsed:.2f}s")
             
     except Exception as e:
-        print(f"❌ Erreur: {e}", file=sys.stderr)
         if args.verbose:
             import traceback
             traceback.print_exc()

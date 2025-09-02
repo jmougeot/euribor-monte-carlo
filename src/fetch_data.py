@@ -24,7 +24,6 @@ def fetch_euribor(tenor="3M", last_n=600, timeout=15):
         url = f"{ECB_BASE}/{dataset}/{keypath}?lastNObservations={last_n}"
         
         try:
-            print(f"Tentative de récupération: {label}")
             r = requests.get(url, headers=HEADERS, timeout=timeout)
             
             if r.status_code != 200:
@@ -60,7 +59,6 @@ def fetch_euribor(tenor="3M", last_n=600, timeout=15):
             if out["rate"].max() > 2:
                 out["rate"] = out["rate"] / 100.0
                 
-            print(f"✓ Récupération réussie: {len(out)} observations")
             return out.reset_index(drop=True), {
                 "source": "ECB_SDW", 
                 "series_label": label, 
@@ -80,15 +78,11 @@ def load_with_fallback(tenor="3M", path_csv="data/sample_euribor3m.csv"):
     """
     try:
         df, meta = fetch_euribor(tenor=tenor)
-        print(f"✓ Données API récupérées: {meta}")
         return df, meta
     except Exception as e:
-        print(f"⚠ Échec API ECB: {e}")
         try:
-            print(f"→ Utilisation du fallback CSV: {path_csv}")
             df = pd.read_csv(path_csv, parse_dates=["date"])
             df = df.sort_values("date").dropna()
-            print(f"✓ Données CSV chargées: {len(df)} observations")
             return df, {
                 "source": "fallback_csv", 
                 "error_api": str(e),
@@ -101,8 +95,5 @@ if __name__ == "__main__":
     # Test du module
     try:
         data, meta = load_with_fallback()
-        print(f"\nDonnées chargées:")
-        print(data.head())
-        print(f"\nMétadonnées: {meta}")
     except Exception as e:
-        print(f"Erreur: {e}")
+        pass
