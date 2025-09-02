@@ -1,17 +1,17 @@
-# 🎯 Simulation Monte Carlo Euribor - Modèle de Vasicek
+# Simulation Monte Carlo Euribor - Modèle de Vasicek
 
 Ce projet implémente une simulation Monte Carlo complète pour les taux Euribor en utilisant le modèle de Vasicek. Il inclut la récupération automatique de données via l'API ECB Statistical Data Warehouse, la calibration du modèle et la génération de scénarios futurs.
 
-## ✨ Fonctionnalités
+## Fonctionnalités
 
-- **📊 Récupération automatique des données** : API ECB SDW avec fallback CSV
-- **🔧 Calibration robuste** : Méthodes OLS et Maximum Likelihood
-- **🎲 Simulation Monte Carlo** : Méthodes exacte et Euler-Maruyama
-- **📈 Visualisations complètes** : Trajectoires, distributions, statistiques
-- **💾 Export flexible** : CSV, JSON, graphiques haute résolution
-- **🛠️ Interface CLI** : Arguments complets pour tous les paramètres
+- **Récupération automatique des données** : API ECB SDW avec fallback CSV
+- **Calibration robuste** : Méthodes OLS et Maximum Likelihood
+- **Simulation Monte Carlo** : Méthodes exacte et Euler-Maruyama
+- **Visualisations complètes** : Trajectoires, distributions, statistiques
+- **Export flexible** : CSV, JSON, graphiques haute résolution
+- **Interface CLI** : Arguments complets pour tous les paramètres
 
-## 🚀 Installation rapide
+## Installation rapide
 
 ```bash
 # Cloner et installer
@@ -20,7 +20,7 @@ source .venv/bin/activate  # Sur Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-## 📋 Dépendances
+## Dépendances
 
 - `requests` : Récupération données API
 - `pandas` : Manipulation des données
@@ -28,7 +28,7 @@ pip install -r requirements.txt
 - `scipy` : Optimisation MLE
 - `matplotlib` : Visualisations
 
-## 🎯 Utilisation
+## Utilisation
 
 ### Simulation de base
 ```bash
@@ -65,7 +65,7 @@ python -m src.simulation
 python -m src.visualize
 ```
 
-## 📊 Structure des données
+## Structure des données
 
 Le projet fonctionne avec des données au format :
 ```csv
@@ -75,7 +75,7 @@ date,rate
 ...
 ```
 
-## 🔧 Modèle de Vasicek
+## Modèle de Vasicek
 
 Le modèle implémente l'équation différentielle stochastique :
 
@@ -94,7 +94,7 @@ Où :
 1. **Exacte** (recommandée) : Solution analytique du processus d'Ornstein-Uhlenbeck
 2. **Euler** : Approximation discrète par schéma d'Euler-Maruyama
 
-## 📈 Sorties
+## Sorties
 
 ### Statistiques terminales
 - Moyenne, médiane, écart-type
@@ -110,7 +110,7 @@ Où :
 - **JSON** : Statistiques et métadonnées
 - **PNG** : Graphiques haute résolution
 
-## 🎨 Visualisations
+## Visualisations
 
 Le module `visualize.py` génère :
 - Trajectoires échantillon avec intervalles de confiance
@@ -118,7 +118,7 @@ Le module `visualize.py` génère :
 - Évolution des percentiles
 - Aperçu des données historiques
 
-## ⚙️ Options CLI
+## Options CLI
 
 | Option | Description | Défaut |
 |--------|-------------|---------|
@@ -133,7 +133,7 @@ Le module `visualize.py` génère :
 | `--show-quality` | Qualité ajustement | False |
 | `--verbose` | Mode verbeux | False |
 
-## 🔍 Exemples d'utilisation
+## Exemples d'utilisation
 
 ### Analyse de sensibilité
 ```bash
@@ -158,14 +158,14 @@ python -m src.main --calibration ols --export-stats ols_results.json
 python -m src.main --calibration mle --export-stats mle_results.json
 ```
 
-## ⚠️ Avertissements
+## Avertissements
 
 - **Usage éducatif uniquement** - Pas pour la production sans validation
 - **Données ECB** - Respecter les conditions d'utilisation
 - **Modèle simplifié** - Vasicek ne capture pas tous les phénomènes de marché
 - **Taux négatifs possibles** - Le modèle peut générer des taux négatifs
 
-## 🛠️ Développement
+## Développement
 
 ### Ajout de nouveaux modèles
 1. Créer une classe de paramètres dans `calibration.py`
@@ -181,12 +181,3 @@ python -m src.main --n-paths 100 --horizon 10 --quiet
 python -m src.main --show-quality --verbose
 ```
 
-## 📚 Références
-
-- Vasicek, O. (1977). "An equilibrium characterization of the term structure"
-- Hull, J. (2018). "Options, Futures, and Other Derivatives" 
-- ECB Statistical Data Warehouse : https://sdw.ecb.europa.eu/
-
-## 📄 Licence
-
-Projet éducatif - Usage libre avec attribution
