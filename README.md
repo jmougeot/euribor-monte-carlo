@@ -118,6 +118,93 @@ Le module `visualize.py` génère :
 - Évolution des percentiles
 - Aperçu des données historiques
 
+## Analyse de Stratégies de Trading
+
+Le projet inclut un système d'évaluation de stratégies d'options basé sur les simulations de taux Euribor. Le script `trading_strategy_evaluation.py` permet de comparer différentes stratégies de trading d'options.
+
+### Stratégies Disponibles
+
+#### **Bull Call Spread**
+- **Structure** : Achat call ITM + Vente call OTM
+- **Objectif** : Profit sur hausse modérée avec risque limité
+- **Caractéristiques** :
+  - Coût initial limité
+  - Gain plafonné
+  - Perte maximale = prime payée
+
+#### **Long Straddle**
+- **Structure** : Achat call ATM + Achat put ATM
+- **Objectif** : Profit sur forte volatilité (hausse ou baisse)
+- **Caractéristiques** :
+  - Coût initial élevé
+  - Profit illimité (théoriquement)
+  - Sensible à la volatilité
+
+### Métriques d'Évaluation
+
+Le système calcule automatiquement :
+- **Coût initial** de la stratégie
+- **Ratio Risque/Rendement** (gain max / perte max)
+- **Probabilité de profit** basée sur les simulations Monte Carlo
+- **Seuils de rentabilité** (breakeven points)
+- **Distribution des P&L** à l'expiration
+
+### Utilisation
+
+```bash
+# Exécution de l'analyse comparative
+python trading_strategy_evaluation.py
+
+# Génération automatique de :
+# - Analyse comparative détaillée
+# - Graphique strategy_comparison.png
+# - Recommandations basées sur les métriques
+```
+
+### Exemple de Résultats
+
+```
+=== ANALYSE COMPARATIVE DES STRATÉGIES ===
+
+Bull Call Spread:
+- Coût initial: 0.1289
+- Ratio Risque/Rendement: 0.07
+- Probabilité de profit: 52.4%
+
+Long Straddle:
+- Coût initial: 3.3306
+- Ratio Risque/Rendement: 1.00
+- Probabilité de profit: 55.8%
+
+RECOMMANDATION: Long Straddle (meilleur ratio risque/rendement)
+```
+
+### Pricing des Options
+
+Le système utilise le **modèle de Black-Scholes** avec :
+- Taux sans risque dérivé des simulations Euribor
+- Volatilité calibrée sur les données historiques
+- Prix spot simulé pour l'actif sous-jacent
+- Maturités configurables
+
+### Extension du Système
+
+Pour ajouter de nouvelles stratégies :
+
+1. **Définir la structure** dans `create_strategy()`
+2. **Implémenter le payoff** dans `calculate_payoff()`
+3. **Ajouter les métriques** spécifiques
+4. **Configurer l'affichage** des résultats
+
+```python
+def create_iron_condor():
+    # Exemple d'extension
+    return {
+        'calls': [buy_call_itm, sell_call_atm, sell_put_atm, buy_put_otm],
+        'description': 'Iron Condor - Profit sur faible volatilité'
+    }
+```
+
 ## Options CLI
 
 | Option | Description | Défaut |
@@ -179,5 +266,19 @@ python -m src.main --n-paths 100 --horizon 10 --quiet
 
 # Validation complète
 python -m src.main --show-quality --verbose
+
+# Test d'analyse de stratégies
+python trading_strategy_evaluation.py
 ```
+
+## Fichiers Principaux
+
+- **`src/main.py`** : Interface CLI principale
+- **`src/fetch_data.py`** : Récupération données ECB API
+- **`src/calibration.py`** : Calibration modèle Vasicek
+- **`src/simulation.py`** : Simulation Monte Carlo
+- **`src/visualize.py`** : Génération graphiques
+- **`trading_strategy_evaluation.py`** : Analyse stratégies options
+- **`generate_plots.py`** : Génération automatique visualisations
+- **`interactive_plots.py`** : Graphiques interactifs
 
